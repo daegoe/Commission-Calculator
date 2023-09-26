@@ -25,26 +25,32 @@
 <div id="calculator">
     <h2>Commission Calculator</h2>
     <label for="amount">Enter Sales Amount:</label>
-    <input type="number" id="amount" placeholder="Sales Amount">
+    <input type="text" id="amount" placeholder="Sales Amount" onkeydown="handleEnterKey(event)">
     <button onclick="calculateCommission()">Calculate</button>
     <p id="result">Commission: $0</p>
 </div>
 
 <script>
+    function handleEnterKey(event) {
+        if (event.key === 'Enter') {
+            calculateCommission();
+        }
+    }
+
     function calculateCommission() {
-        // Get the amount, and remove any commas, dollar signs, or other unwanted characters
-        let amount = parseFloat(document.getElementById('amount').value);
+        // Get the raw amount, and remove any commas, dollar signs, or other unwanted characters
+        let rawAmount = document.getElementById('amount').value;
         let sanitizedAmount = parseFloat(rawAmount.replace(/[\$,]/g, ''));
         let commission = 0;
 
-        if (amount <= 100000) {
-            commission = 0.0035 * amount;
-        } else if (amount > 100000 && amount <= 150000) {
-            commission = 0.005 * amount;
-        } else if (amount > 150000 && amount <= 300000) {
-            commission = 0.006 * amount;
-        } else if (amount > 300000 && amount <= 750000) {
-            commission = 0.0075 * amount;
+        if (sanitizedAmount <= 100000) {
+            commission = 0.0035 * sanitizedAmount;
+        } else if (sanitizedAmount > 100000 && sanitizedAmount <= 150000) {
+            commission = 0.005 * sanitizedAmount;
+        } else if (sanitizedAmount > 150000 && sanitizedAmount <= 300000) {
+            commission = 0.006 * sanitizedAmount;
+        } else if (sanitizedAmount > 300000 && sanitizedAmount <= 750000) {
+            commission = 0.0075 * sanitizedAmount;
         } // Add more tiers as needed
 
         document.getElementById('result').innerText = 'Commission: $' + commission.toFixed(2);
