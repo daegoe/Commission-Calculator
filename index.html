@@ -25,7 +25,7 @@
 <div id="calculator">
     <h2>Commission Calculator</h2>
     <label for="amount">Enter Sales Amount:</label>
-    <input type="text" id="amount" placeholder="Sales Amount" onkeydown="handleEnterKey(event)">
+    <input type="tel" id="amount" placeholder="Sales Amount" onkeydown="handleEnterKey(event)" autofocus>
     <button onclick="calculateCommission()">Calculate</button>
     <p id="result">Commission: $0</p>
 </div>
@@ -55,6 +55,10 @@
 
         document.getElementById('result').innerText = 'Commission: $' + commission.toFixed(2);
     }
+
+    // Additional code to autofocus and potentially bring up the keypad
+    document.getElementById('amount').focus();
+    document.getElementById('amount').click();
 </script>
 
 </body>
