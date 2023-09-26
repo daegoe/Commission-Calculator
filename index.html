@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Commission Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        #calculator {
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+
+<div id="calculator">
+    <h2>Commission Calculator</h2>
+    <label for="amount">Enter Sales Amount:</label>
+    <input type="number" id="amount" placeholder="Sales Amount">
+    <button onclick="calculateCommission()">Calculate</button>
+    <p id="result">Commission: $0</p>
+</div>
+
+<script>
+    function calculateCommission() {
+        let amount = parseFloat(document.getElementById('amount').value);
+        let commission = 0;
+
+        if (amount <= 100000) {
+            commission = 0.0035 * amount;
+        } else if (amount > 100000 && amount <= 150000) {
+            commission = 0.005 * amount;
+        } else if (amount > 150000 && amount <= 300000) {
+            commission = 0.006 * amount;
+        } else if (amount > 300000 && amount <= 750000) {
+            commission = 0.0075 * amount;
+        } // Add more tiers as needed
+
+        document.getElementById('result').innerText = 'Commission: $' + commission.toFixed(2);
+    }
+</script>
+
+</body>
+</html>
