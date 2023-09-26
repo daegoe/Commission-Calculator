@@ -32,7 +32,9 @@
 
 <script>
     function calculateCommission() {
+        // Get the amount, and remove any commas, dollar signs, or other unwanted characters
         let amount = parseFloat(document.getElementById('amount').value);
+        let sanitizedAmount = parseFloat(rawAmount.replace(/[\$,]/g, ''));
         let commission = 0;
 
         if (amount <= 100000) {
