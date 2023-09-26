@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,55 +12,91 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
-        }
-        #calculator {
+            margin: 0;
             padding: 20px;
-            border: 1px solid #ccc;
+            box-sizing: border-box;
+            background-color: #121212;
+            color: #E8E8E8;
+        }
+
+        #calculator {
+            max-width: 100%;
+            padding: 20px;
             border-radius: 5px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            background-color: #1E1E1E;
+        }
+
+        input,
+        button {
+            font-size: 16px;
+            margin-top: 10px;
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #333;
+            border-radius: 5px;
+            background-color: #2D2D2D;
+            color: #E8E8E8;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+
+        input:focus,
+        button:hover {
+            background-color: #3A3A3A;
+        }
+
+        button:active {
+            transform: scale(0.98);
         }
     </style>
 </head>
+
 <body>
 
-<div id="calculator">
-    <h2>Commission Calculator</h2>
-    <label for="amount">Enter Sales Amount:</label>
-    <input type="tel" id="amount" placeholder="Sales Amount" onkeydown="handleEnterKey(event)" autofocus>
-    <button onclick="calculateCommission()">Calculate</button>
-    <p id="result">Commission: $0</p>
-</div>
+    <div id="calculator">
+        <h2>Commission Calculator</h2>
+        <label for="amount">Enter Sales Amount:</label>
+        <input type="tel" id="amount" placeholder="Sales Amount" onkeydown="handleEnterKey(event)" oninput="formatAmount()" autofocus>
+        <button onclick="calculateCommission()">Calculate</button>
+        <p id="result">Commission: $0</p>
+    </div>
 
-<script>
-    function handleEnterKey(event) {
-        if (event.key === 'Enter') {
-            calculateCommission();
+    <script>
+        function handleEnterKey(event) {
+            if (event.key === 'Enter') {
+                calculateCommission();
+            }
         }
-    }
 
-    function calculateCommission() {
-        // Get the raw amount, and remove any commas, dollar signs, or other unwanted characters
-        let rawAmount = document.getElementById('amount').value;
-        let sanitizedAmount = parseFloat(rawAmount.replace(/[\$,]/g, ''));
-        let commission = 0;
+        function formatAmount() {
+            let inputField = document.getElementById('amount');
+            let rawValue = inputField.value.replace(/[\$,]/g, ''); // remove existing commas and dollar signs
+            if (rawValue) {
+                let numberValue = parseFloat(rawValue);
+                inputField.value = '$' + numberValue.toLocaleString('en-US', { minimumFractionDigits: 0 });
+            }
+        }
 
-        if (sanitizedAmount <= 100000) {
-            commission = 0.0035 * sanitizedAmount;
-        } else if (sanitizedAmount > 100000 && sanitizedAmount <= 150000) {
-            commission = 0.005 * sanitizedAmount;
-        } else if (sanitizedAmount > 150000 && sanitizedAmount <= 300000) {
-            commission = 0.006 * sanitizedAmount;
-        } else if (sanitizedAmount > 300000 && sanitizedAmount <= 750000) {
-            commission = 0.0075 * sanitizedAmount;
-        } // Add more tiers as needed
+        function calculateCommission() {
+            // Get the raw amount, and remove any commas, dollar signs, or other unwanted characters
+            let rawAmount = document.getElementById('amount').value;
+            let sanitizedAmount = parseFloat(rawAmount.replace(/[\$,]/g, ''));
+            let commission = 0;
 
-        document.getElementById('result').innerText = 'Commission: $' + commission.toFixed(2);
-    }
+            if (sanitizedAmount <= 100000) {
+                commission = 0.0035 * sanitizedAmount;
+            } else if (sanitizedAmount > 100000 && sanitizedAmount <= 150000) {
+                commission = 0.005 * sanitizedAmount;
+            } else if (sanitizedAmount > 150000 && sanitizedAmount <= 300000) {
+                commission = 0.006 * sanitizedAmount;
+            } else if (sanitizedAmount > 300000 && sanitizedAmount <= 750000) {
+                commission = 0.0075 * sanitizedAmount;
+            }
 
-    // Additional code to autofocus and potentially bring up the keypad
-    document.getElementById('amount').focus();
-    document.getElementById('amount').click();
-</script>
+            document.getElementById('result').innerText = 'Commission: $' + commission.toFixed(2);
+        }
+    </script>
 
 </body>
+
 </html>
