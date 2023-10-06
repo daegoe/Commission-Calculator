@@ -47,7 +47,7 @@
     <div id="calculator">
         <h2>Incentive Calculator</h2>
         <label for="amount">Enter Sales Amount:</label>
-        <input type="tel" id="amount" placeholder="$0" onkeydown="handleEnterKey(event)" onblur="formatAmount()" autofocus>
+        <input type="tel" id="amount" placeholder="$0" onkeydown="handleEnterKey(event)" oninput="formatAmountLive()" autofocus>
         <button onclick="calculateIncentive()">Calculate</button>
         <p id="tier">Tier: None</p>
         <p id="result-met">Incentive (C&C Met): $0</p>
@@ -61,17 +61,21 @@
             }
         }
 
-        function formatAmount() {
+        function formatAmountLive() {
             let amountInput = document.getElementById('amount');
-            let value = parseFloat(amountInput.value.replace(/[\$,]/g, ''));
-            if (!isNaN(value)) {
-                amountInput.value = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(value);
-            }
+            let cursorPosition = amountInput.selectionStart;
+            let rawValue = amountInput.value.replace(/[\$,]/g, '');
+            let formattedValue = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(rawValue);
+
+            // Update the input's value
+            amountInput.value = formattedValue;
+
+            // Restore the cursor's position
+            amountInput.selectionStart = cursorPosition;
+            amountInput.selectionEnd = cursorPosition;
         }
 
         function calculateIncentive() {
-            formatAmount(); // Format before calculating
-
             let rawAmount = document.getElementById('amount').value;
             let sanitizedAmount = parseFloat(rawAmount.replace(/[\$,]/g, ''));
             let incentiveMet = 0;
