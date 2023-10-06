@@ -100,7 +100,7 @@
                 incentiveNotMet = 0.00850 * amount;
             }
 
-            document.getElementById('tier').innerText = 'Tier: ' + tier;
+            document.getElementById('tier').innerText = tier;
             document.getElementById('resultMet').innerText = 'Incentive (C&C Met): ' + new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(incentiveMet);
             document.getElementById('resultNotMet').innerText = 'Incentive (C&C Not Met): ' + new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(incentiveNotMet);
         }
