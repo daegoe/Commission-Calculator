@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -12,98 +11,92 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
-            background-color: #181818;
-            color: #EAEAEA;
+            background-color: #333;
         }
         #calculator {
             padding: 20px;
             border-radius: 5px;
-            background-color: #282828;
-            box-shadow: 0 0 10px rgba(0,0,0,0.5);
+            width: 90%;
+            max-width: 400px;
+            background-color: #444;
+            color: #eee;
         }
         button {
-            background-color: #007BFF;
-            color: white;
+            display: block;
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
             border: none;
-            padding: 10px 20px;
             border-radius: 5px;
+            background-color: #666;
+            color: #fff;
             cursor: pointer;
-            transition: background-color 0.3s;
         }
         button:hover {
-            background-color: #0056b3;
+            background-color: #555;
         }
         input {
+            width: 100%;
             padding: 10px;
+            margin-top: 10px;
+            background-color: #555;
+            border: none;
             border-radius: 5px;
-            border: 1px solid #888;
-            background-color: #222;
-            color: #EAEAEA;
+            color: #eee;
         }
     </style>
 </head>
-
 <body>
-    <div id="calculator">
-        <h2>Incentive Calculator</h2>
-        <label for="amount">Enter Sales Amount:</label>
-        <input type="tel" id="amount" placeholder="$0" onkeydown="handleEnterKey(event)" oninput="formatAmountLive()" autofocus>
-        <button onclick="calculateIncentive()">Calculate</button>
-        <p id="tier">Tier: None</p>
-        <p id="result-met">Incentive (C&C Met): $0</p>
-        <p id="result-not-met">Incentive (C&C Not Met): $0</p>
-    </div>
 
-    <script>
-        function handleEnterKey(e) {
-            if (e.key === "Enter") {
-                calculateIncentive();
-            }
+<div id="calculator">
+    <h2>Incentive Calculator</h2>
+    <label for="amount">Enter Sales Amount:</label>
+    <input type="tel" id="amount" placeholder="$0" onkeydown="handleEnterKey(event)" oninput="formatAmountLive()" autofocus>
+    <button onclick="calculateIncentive()">Calculate</button>
+    <p id="result">Incentive (C&C Met): $0 | Incentive (C&C Not Met): $0</p>
+</div>
+
+<script>
+    function handleEnterKey(event) {
+        if (event.key === "Enter") {
+            calculateIncentive();
+        }
+    }
+
+    function formatAmountLive() {
+        let amountInput = document.getElementById('amount');
+        let rawValue = amountInput.value.replace(/[\$,]/g, '');
+        let formattedValue = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(rawValue);
+        amountInput.value = formattedValue;
+
+        // Ensure cursor stays at the end
+        amountInput.selectionStart = amountInput.value.length;
+        amountInput.selectionEnd = amountInput.value.length;
+    }
+
+    function calculateIncentive() {
+        let rawAmount = document.getElementById('amount').value;
+        let amount = parseFloat(rawAmount.replace(/[\$,]/g, ''));
+        let incentiveMet = 0;
+        let incentiveNotMet = 0;
+
+        if (amount <= 100000) {
+            incentiveMet = 0.0035 * amount;
+            incentiveNotMet = 0.00298 * amount;
+        } else if (amount > 100000 && amount <= 350000) {
+            incentiveMet = 0.00685 * amount;
+            incentiveNotMet = 0.00582 * amount;
+        } else if (amount > 350000 && amount <= 1000000) {
+            incentiveMet = 0.008 * amount;
+            incentiveNotMet = 0.0068 * amount;
+        } else if (amount > 1000000 && amount <= 3000000) {
+            incentiveMet = 0.01 * amount;
+            incentiveNotMet = 0.0085 * amount;
         }
 
-        function formatAmountLive() {
-            let amountInput = document.getElementById('amount');
-            let rawValue = amountInput.value.replace(/[\$,]/g, '');
-            let formattedValue = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(rawValue);
-            amountInput.value = formattedValue;
-        
-            // Ensure cursor stays at the end
-            amountInput.selectionStart = amountInput.value.length;
-            amountInput.selectionEnd = amountInput.value.length;
-        }
+        document.getElementById('result').innerText = 'Incentive (C&C Met): $' + incentiveMet.toFixed(2) + ' | Incentive (C&C Not Met): $' + incentiveNotMet.toFixed(2);
+    }
+</script>
 
-
-
-        function calculateIncentive() {
-            let rawAmount = document.getElementById('amount').value;
-            let sanitizedAmount = parseFloat(rawAmount.replace(/[\$,]/g, ''));
-            let incentiveMet = 0;
-            let incentiveNotMet = 0;
-            let tier = "None";
-
-            if (sanitizedAmount <= 100000) {
-                tier = "Tier 1";
-                incentiveMet = 0.00350 * sanitizedAmount;
-                incentiveNotMet = 0.00298 * sanitizedAmount;
-            } else if (sanitizedAmount <= 350000) {
-                tier = "Tier 2";
-                incentiveMet = 0.00685 * sanitizedAmount;
-                incentiveNotMet = 0.00582 * sanitizedAmount;
-            } else if (sanitizedAmount <= 1000000) {
-                tier = "Tier 3";
-                incentiveMet = 0.00800 * sanitizedAmount;
-                incentiveNotMet = 0.00680 * sanitizedAmount;
-            } else if (sanitizedAmount <= 3000000) {
-                tier = "Tier 4";
-                incentiveMet = 0.01000 * sanitizedAmount;
-                incentiveNotMet = 0.00850 * sanitizedAmount;
-            }
-
-            document.getElementById('tier').innerText = 'Tier: ' + tier;
-            document.getElementById('result-met').innerText = 'Incentive (C&C Met): $' + incentiveMet.toFixed(2);
-            document.getElementById('result-not-met').innerText = 'Incentive (C&C Not Met): $' + incentiveNotMet.toFixed(2);
-        }
-    </script>
 </body>
-
 </html>
