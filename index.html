@@ -11,38 +11,17 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
-            background-color: #333;
+            background-color: #2c3e50;
         }
         #calculator {
             padding: 20px;
             border-radius: 5px;
-            width: 90%;
-            max-width: 400px;
-            background-color: #444;
-            color: #eee;
+            background-color: #34495e;
+            color: #ecf0f1;
         }
         button {
-            display: block;
-            width: 100%;
-            padding: 10px;
             margin-top: 10px;
-            border: none;
-            border-radius: 5px;
-            background-color: #666;
-            color: #fff;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #555;
-        }
-        input {
-            width: 100%;
-            padding: 10px;
-            margin-top: 10px;
-            background-color: #555;
-            border: none;
-            border-radius: 5px;
-            color: #eee;
+            padding: 5px 15px;
         }
     </style>
 </head>
@@ -51,50 +30,55 @@
 <div id="calculator">
     <h2>Incentive Calculator</h2>
     <label for="amount">Enter Sales Amount:</label>
-    <input type="tel" id="amount" placeholder="$0" onkeydown="handleEnterKey(event)" oninput="formatAmountLive()" autofocus>
+    <input type="tel" id="amount" placeholder="$0" onkeydown="handleEnterKey(event)" onblur="formatAmountOnBlur()" autofocus>
     <button onclick="calculateIncentive()">Calculate</button>
-    <p id="result">Incentive (C&C Met): $0 | Incentive (C&C Not Met): $0</p>
+    <p id="tier">Tier: Not determined</p>
+    <p id="resultMet">Incentive (C&C Met): $0</p>
+    <p id="resultNotMet">Incentive (C&C Not Met): $0</p>
 </div>
 
 <script>
-    function handleEnterKey(event) {
-        if (event.key === "Enter") {
-            calculateIncentive();
-        }
+    function calculateIncentive() {
+        let amountInput = document.getElementById('amount').value.replace(/[\$,]/g, '');
+        let amount = parseFloat(amountInput);
+        let incentiveMet = 0;
+        let incentiveNotMet = 0;
+        let tier = "Not determined";
+
+        if (amount <= 100000) {
+            tier = "Tier 1";
+            incentiveMet = 0.00350 * amount;
+            incentiveNotMet = 0.00298 * amount;
+        } else if (amount <= 350000) {
+            tier = "Tier 2";
+            incentiveMet = 0.00685 * amount;
+            incentiveNotMet = 0.00582 * amount;
+        } else if (amount <= 1000000) {
+            tier = "Tier 3";
+            incentiveMet = 0.00800 * amount;
+            incentiveNotMet = 0.00680 * amount;
+        } else if (amount <= 3000000) {
+            tier = "Tier 4";
+            incentiveMet = 0.01000 * amount;
+            incentiveNotMet = 0.00850 * amount;
+        } 
+
+        document.getElementById('tier').innerText = 'Tier: ' + tier;
+        document.getElementById('resultMet').innerText = 'Incentive (C&C Met): $' + incentiveMet.toFixed(2);
+        document.getElementById('resultNotMet').innerText = 'Incentive (C&C Not Met): $' + incentiveNotMet.toFixed(2);
     }
 
-    function formatAmountLive() {
+    function formatAmountOnBlur() {
         let amountInput = document.getElementById('amount');
         let rawValue = amountInput.value.replace(/[\$,]/g, '');
         let formattedValue = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(rawValue);
         amountInput.value = formattedValue;
-
-        // Ensure cursor stays at the end
-        amountInput.selectionStart = amountInput.value.length;
-        amountInput.selectionEnd = amountInput.value.length;
     }
 
-    function calculateIncentive() {
-        let rawAmount = document.getElementById('amount').value;
-        let amount = parseFloat(rawAmount.replace(/[\$,]/g, ''));
-        let incentiveMet = 0;
-        let incentiveNotMet = 0;
-
-        if (amount <= 100000) {
-            incentiveMet = 0.0035 * amount;
-            incentiveNotMet = 0.00298 * amount;
-        } else if (amount > 100000 && amount <= 350000) {
-            incentiveMet = 0.00685 * amount;
-            incentiveNotMet = 0.00582 * amount;
-        } else if (amount > 350000 && amount <= 1000000) {
-            incentiveMet = 0.008 * amount;
-            incentiveNotMet = 0.0068 * amount;
-        } else if (amount > 1000000 && amount <= 3000000) {
-            incentiveMet = 0.01 * amount;
-            incentiveNotMet = 0.0085 * amount;
+    function handleEnterKey(event) {
+        if (event.key === 'Enter' || event.keyCode === 13) {
+            calculateIncentive();
         }
-
-        document.getElementById('result').innerText = 'Incentive (C&C Met): $' + incentiveMet.toFixed(2) + ' | Incentive (C&C Not Met): $' + incentiveNotMet.toFixed(2);
     }
 </script>
 
