@@ -23,6 +23,36 @@
             margin-top: 10px;
             padding: 5px 15px;
         }
+        #amountWrapper {
+            position: relative;
+            display: inline-block;
+        }
+        #amount {
+            border-right: none;
+            padding-left: 15px;
+            background: transparent;
+            z-index: 1;
+            position: relative;
+        }
+        #amountWrapper::before {
+            content: "$";
+            position: absolute;
+            left: 5px;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 2;
+        }
+        #amountDisplay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 0;
+            pointer-events: none;
+            border: 1px solid #ccc;
+            padding-left: 15px;
+        }
     </style>
 </head>
 <body>
@@ -30,7 +60,10 @@
 <div id="calculator">
     <h2>Incentive Calculator</h2>
     <label for="amount">Enter Sales Amount:</label>
-    <input type="tel" id="amount" placeholder="$0" onkeydown="handleEnterKey(event)" onblur="formatAmountOnBlur()" autofocus>
+    <div id="amountWrapper">
+        <input type="tel" id="amount" placeholder="0" oninput="formatAmountLive()" onkeydown="handleEnterKey(event)" autofocus>
+        <div id="amountDisplay"></div>
+    </div>
     <button onclick="calculateIncentive()">Calculate</button>
     <p id="tier">Tier: Not determined</p>
     <p id="resultMet">Incentive (C&C Met): $0</p>
@@ -38,6 +71,13 @@
 </div>
 
 <script>
+    function formatAmountLive() {
+        let amountInput = document.getElementById('amount');
+        let rawValue = amountInput.value.replace(/[\$,]/g, '');
+        let formattedValue = new Intl.NumberFormat('en-US').format(rawValue);
+        document.getElementById('amountDisplay').innerText = formattedValue;
+    }
+
     function calculateIncentive() {
         let amountInput = document.getElementById('amount').value.replace(/[\$,]/g, '');
         let amount = parseFloat(amountInput);
@@ -64,15 +104,8 @@
         } 
 
         document.getElementById('tier').innerText = 'Tier: ' + tier;
-        document.getElementById('resultMet').innerText = 'Incentive (C&C Met): $' + incentiveMet.toFixed(2);
-        document.getElementById('resultNotMet').innerText = 'Incentive (C&C Not Met): $' + incentiveNotMet.toFixed(2);
-    }
-
-    function formatAmountOnBlur() {
-        let amountInput = document.getElementById('amount');
-        let rawValue = amountInput.value.replace(/[\$,]/g, '');
-        let formattedValue = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(rawValue);
-        amountInput.value = formattedValue;
+        document.getElementById('resultMet').innerText = 'Incentive (C&C Met): ' + new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(incentiveMet);
+        document.getElementById('resultNotMet').innerText = 'Incentive (C&C Not Met): ' + new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(incentiveNotMet);
     }
 
     function handleEnterKey(event) {
