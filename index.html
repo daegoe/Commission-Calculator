@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Commission Calculator</title>
+    <title>Incentive Calculator</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -45,19 +45,19 @@
 
 <body>
     <div id="calculator">
-        <h2>Commission Calculator</h2>
+        <h2>Incentive Calculator</h2>
         <label for="amount">Enter Sales Amount:</label>
-        <input type="tel" id="amount" placeholder="$0" onkeydown="handleEnterKey(event)" oninput="formatAmount()" autofocus>
-        <button onclick="calculateCommission()">Calculate</button>
+        <input type="tel" id="amount" placeholder="$0" onkeydown="handleEnterKey(event)" onblur="formatAmount()" autofocus>
+        <button onclick="calculateIncentive()">Calculate</button>
         <p id="tier">Tier: None</p>
-        <p id="result-met">Commission (C&C Met): $0</p>
-        <p id="result-not-met">Commission (C&C Not Met): $0</p>
+        <p id="result-met">Incentive (C&C Met): $0</p>
+        <p id="result-not-met">Incentive (C&C Not Met): $0</p>
     </div>
 
     <script>
         function handleEnterKey(e) {
             if (e.key === "Enter") {
-                calculateCommission();
+                calculateIncentive();
             }
         }
 
@@ -69,34 +69,36 @@
             }
         }
 
-        function calculateCommission() {
+        function calculateIncentive() {
+            formatAmount(); // Format before calculating
+
             let rawAmount = document.getElementById('amount').value;
             let sanitizedAmount = parseFloat(rawAmount.replace(/[\$,]/g, ''));
-            let commissionMet = 0;
-            let commissionNotMet = 0;
+            let incentiveMet = 0;
+            let incentiveNotMet = 0;
             let tier = "None";
 
             if (sanitizedAmount <= 100000) {
                 tier = "Tier 1";
-                commissionMet = 0.00350 * sanitizedAmount;
-                commissionNotMet = 0.00298 * sanitizedAmount;
+                incentiveMet = 0.00350 * sanitizedAmount;
+                incentiveNotMet = 0.00298 * sanitizedAmount;
             } else if (sanitizedAmount <= 350000) {
                 tier = "Tier 2";
-                commissionMet = 0.00685 * sanitizedAmount;
-                commissionNotMet = 0.00582 * sanitizedAmount;
+                incentiveMet = 0.00685 * sanitizedAmount;
+                incentiveNotMet = 0.00582 * sanitizedAmount;
             } else if (sanitizedAmount <= 1000000) {
                 tier = "Tier 3";
-                commissionMet = 0.00800 * sanitizedAmount;
-                commissionNotMet = 0.00680 * sanitizedAmount;
+                incentiveMet = 0.00800 * sanitizedAmount;
+                incentiveNotMet = 0.00680 * sanitizedAmount;
             } else if (sanitizedAmount <= 3000000) {
                 tier = "Tier 4";
-                commissionMet = 0.01000 * sanitizedAmount;
-                commissionNotMet = 0.00850 * sanitizedAmount;
+                incentiveMet = 0.01000 * sanitizedAmount;
+                incentiveNotMet = 0.00850 * sanitizedAmount;
             }
 
             document.getElementById('tier').innerText = 'Tier: ' + tier;
-            document.getElementById('result-met').innerText = 'Commission (C&C Met): $' + commissionMet.toFixed(2);
-            document.getElementById('result-not-met').innerText = 'Commission (C&C Not Met): $' + commissionNotMet.toFixed(2);
+            document.getElementById('result-met').innerText = 'Incentive (C&C Met): $' + incentiveMet.toFixed(2);
+            document.getElementById('result-not-met').innerText = 'Incentive (C&C Not Met): $' + incentiveNotMet.toFixed(2);
         }
     </script>
 </body>
