@@ -63,17 +63,24 @@
 
         function formatAmountLive() {
             let amountInput = document.getElementById('amount');
-            let cursorPosition = amountInput.selectionStart;
             let rawValue = amountInput.value.replace(/[\$,]/g, '');
+        
+            // Determine if a comma or dollar sign is being added/removed
+            let oldFormattedLength = amountInput.value.length;
             let formattedValue = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(rawValue);
-
+            let differenceInLength = formattedValue.length - oldFormattedLength;
+            
+            // Calculate new cursor position
+            let newCursorPosition = amountInput.selectionStart + differenceInLength;
+        
             // Update the input's value
             amountInput.value = formattedValue;
-
-            // Restore the cursor's position
-            amountInput.selectionStart = cursorPosition;
-            amountInput.selectionEnd = cursorPosition;
+        
+            // Set the new cursor position
+            amountInput.selectionStart = newCursorPosition;
+            amountInput.selectionEnd = newCursorPosition;
         }
+
 
         function calculateIncentive() {
             let rawAmount = document.getElementById('amount').value;
