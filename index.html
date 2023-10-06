@@ -80,27 +80,25 @@
             let amount = parseFloat(document.getElementById('amount').value.replace(/[\$,]/g, ''));
             let incentiveMet = 0;
             let incentiveNotMet = 0;
-            let tier = "Not determined";
 
-            if (amount <= 100000) {
-                tier = "Tier 1";
-                incentiveMet = 0.00350 * amount;
-                incentiveNotMet = 0.00298 * amount;
-            } else if (amount <= 350000) {
-                tier = "Tier 2";
-                incentiveMet = 0.00685 * amount;
-                incentiveNotMet = 0.00582 * amount;
-            } else if (amount <= 1000000) {
-                tier = "Tier 3";
-                incentiveMet = 0.00800 * amount;
-                incentiveNotMet = 0.00680 * amount;
-            } else if (amount <= 3000000) {
-                tier = "Tier 4";
+            if (amount > 1000000) {
+                document.getElementById('tier').innerText = "Tier 4";
                 incentiveMet = 0.01000 * amount;
                 incentiveNotMet = 0.00850 * amount;
+            } else if (amount > 350000) {
+                document.getElementById('tier').innerText = "Tier 3";
+                incentiveMet = 0.00800 * amount;
+                incentiveNotMet = 0.00680 * amount;
+            } else if (amount > 100000) {
+                document.getElementById('tier').innerText = "Tier 2";
+                incentiveMet = 0.00685 * amount;
+                incentiveNotMet = 0.00582 * amount;
+            } else {
+                document.getElementById('tier').innerText = "Tier 1";
+                incentiveMet = 0.00350 * amount;
+                incentiveNotMet = 0.00298 * amount;
             }
 
-            document.getElementById('tier').innerText = tier;
             document.getElementById('resultMet').innerText = 'Incentive (C&C Met): ' + new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(incentiveMet);
             document.getElementById('resultNotMet').innerText = 'Incentive (C&C Not Met): ' + new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(incentiveNotMet);
         }
