@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Commission Calculator</title>
     <style>
         body {
@@ -12,91 +12,93 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
-            margin: 0;
-            padding: 20px;
-            box-sizing: border-box;
-            background-color: #121212;
-            color: #E8E8E8;
+            background-color: #181818;
+            color: #EAEAEA;
         }
-
         #calculator {
-            max-width: 100%;
             padding: 20px;
             border-radius: 5px;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-            background-color: #1E1E1E;
+            background-color: #282828;
+            box-shadow: 0 0 10px rgba(0,0,0,0.5);
         }
-
-        input,
         button {
-            font-size: 16px;
-            margin-top: 10px;
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #333;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            padding: 10px 20px;
             border-radius: 5px;
-            background-color: #2D2D2D;
-            color: #E8E8E8;
-            transition: background-color 0.3s, transform 0.3s;
+            cursor: pointer;
+            transition: background-color 0.3s;
         }
-
-        input:focus,
         button:hover {
-            background-color: #3A3A3A;
+            background-color: #0056b3;
         }
-
-        button:active {
-            transform: scale(0.98);
+        input {
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #888;
+            background-color: #222;
+            color: #EAEAEA;
         }
     </style>
 </head>
 
 <body>
-
     <div id="calculator">
         <h2>Commission Calculator</h2>
         <label for="amount">Enter Sales Amount:</label>
-        <input type="tel" id="amount" placeholder="Sales Amount" onkeydown="handleEnterKey(event)" oninput="formatAmount()" autofocus>
+        <input type="tel" id="amount" placeholder="$0" onkeydown="handleEnterKey(event)" oninput="formatAmount()" autofocus>
         <button onclick="calculateCommission()">Calculate</button>
-        <p id="result">Commission: $0</p>
+        <p id="tier">Tier: None</p>
+        <p id="result-met">Commission (C&C Met): $0</p>
+        <p id="result-not-met">Commission (C&C Not Met): $0</p>
     </div>
 
     <script>
-        function handleEnterKey(event) {
-            if (event.key === 'Enter') {
+        function handleEnterKey(e) {
+            if (e.key === "Enter") {
                 calculateCommission();
             }
         }
 
         function formatAmount() {
-            let inputField = document.getElementById('amount');
-            let rawValue = inputField.value.replace(/[\$,]/g, ''); // remove existing commas and dollar signs
-            if (rawValue) {
-                let numberValue = parseFloat(rawValue);
-                inputField.value = '$' + numberValue.toLocaleString('en-US', { minimumFractionDigits: 0 });
+            let amountInput = document.getElementById('amount');
+            let value = parseFloat(amountInput.value.replace(/[\$,]/g, ''));
+            if (!isNaN(value)) {
+                amountInput.value = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(value);
             }
         }
 
         function calculateCommission() {
-            // Get the raw amount, and remove any commas, dollar signs, or other unwanted characters
             let rawAmount = document.getElementById('amount').value;
             let sanitizedAmount = parseFloat(rawAmount.replace(/[\$,]/g, ''));
-            let commission = 0;
+            let commissionMet = 0;
+            let commissionNotMet = 0;
+            let tier = "None";
 
             if (sanitizedAmount <= 100000) {
-                commission = 0.0035 * sanitizedAmount;
-            } else if (sanitizedAmount > 100000 && sanitizedAmount <= 150000) {
-                commission = 0.005 * sanitizedAmount;
-            } else if (sanitizedAmount > 150000 && sanitizedAmount <= 300000) {
-                commission = 0.006 * sanitizedAmount;
-            } else if (sanitizedAmount > 300000 && sanitizedAmount <= 750000) {
-                commission = 0.0075 * sanitizedAmount;
+                tier = "Tier 1";
+                commissionMet = 0.00350 * sanitizedAmount;
+                commissionNotMet = 0.00298 * sanitizedAmount;
+            } else if (sanitizedAmount <= 350000) {
+                tier = "Tier 2";
+                commissionMet = 0.00685 * sanitizedAmount;
+                commissionNotMet = 0.00582 * sanitizedAmount;
+            } else if (sanitizedAmount <= 1000000) {
+                tier = "Tier 3";
+                commissionMet = 0.00800 * sanitizedAmount;
+                commissionNotMet = 0.00680 * sanitizedAmount;
+            } else if (sanitizedAmount <= 3000000) {
+                tier = "Tier 4";
+                commissionMet = 0.01000 * sanitizedAmount;
+                commissionNotMet = 0.00850 * sanitizedAmount;
             }
 
-            document.getElementById('result').innerText = 'Commission: $' + commission.toFixed(2);
+            document.getElementById('tier').innerText = 'Tier: ' + tier;
+            document.getElementById('result-met').innerText = 'Commission (C&C Met): $' + commissionMet.toFixed(2);
+            document.getElementById('result-not-met').innerText = 'Commission (C&C Not Met): $' + commissionNotMet.toFixed(2);
         }
     </script>
-
 </body>
 
 </html>
